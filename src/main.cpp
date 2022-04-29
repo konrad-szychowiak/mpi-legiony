@@ -1,8 +1,11 @@
 #include <iostream>
+#include "threads/main.thread.hxx"
+#include "config.hpp"
+#include <stdlib.h>
+
+using namespace std;
 
 // todo: sending mutex
-
-// todo: status
 
 /**
  * todo: should start both threads
@@ -10,6 +13,11 @@
  */
 int main()
 {
-  std::cout << "Hello, World!" << std::endl;
+  srand(time(NULL));
+  auto processInfo = new ProcessInfo(0, 0, legions[0]);
+
+  mainThread(processInfo);
+
   return 0;
 }
+

@@ -1,0 +1,8 @@
+//
+// Created by konrad on 18.04.2022.
+//
+
+#ifndef LEGIONY_RESPONDER_THREAD_HXX
+#define LEGIONY_RESPONDER_THREAD_HXX
+
+#endif //LEGIONY_RESPONDER_THREAD_HXX
