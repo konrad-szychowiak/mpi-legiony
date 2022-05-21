@@ -10,11 +10,12 @@
 
 class Priority
 {
-private:
+//private:
+public:
   int time;
   int rank;
 
-public:
+//public:
   Priority(int _time, int _rank) : time(_time), rank(_rank)
   {}
 

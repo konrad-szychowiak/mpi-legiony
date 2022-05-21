@@ -28,7 +28,8 @@ public:
   LamportClock *time = nullptr;
   Priority *requestPriority;
   ProcessStatus status;
-  int responsesCount = 0;
+  Mutex responseCtl = PTHREAD_MUTEX_INITIALIZER;
+  int responseCount = 0;
   std::map<int, int> responses;
 
   ProcessInfo(int mpiRank, int mpiNetworkSize, Legion *assignedLegion)
