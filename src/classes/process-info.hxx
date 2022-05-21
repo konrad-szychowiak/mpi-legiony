@@ -8,6 +8,7 @@
 
 #include <map>
 #include "../helpers/status.hxx"
+#include "../helpers/pthread.hxx"
 #include "legion.hxx"
 #include "trail.hxx"
 #include "lamport-clock.hxx"
@@ -16,6 +17,9 @@
 
 class ProcessInfo
 {
+private:
+  Cond sleepVar = PTHREAD_COND_INITIALIZER;
+  Mutex sleepCtl = PTHREAD_MUTEX_INITIALIZER;
 public:
   int rank;
   int networkSize;
@@ -32,6 +36,22 @@ public:
   {
     this->legion = assignedLegion;
     this->time = new LamportClock();
+  }
+
+  void
+  sleep()
+  {
+    lock(&sleepCtl);
+    wait(&sleepVar, &sleepCtl);
+    unlock(&sleepCtl);
+  }
+
+  void
+  wakeUp()
+  {
+    lock(&sleepCtl);
+    signal(&sleepVar);
+    unlock(&sleepCtl);
   }
 };
 

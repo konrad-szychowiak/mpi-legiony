@@ -8,6 +8,9 @@
 #include <random>
 #include <functional>
 #include <chrono>
+#include <array>
+#include <unistd.h>
+#include "../classes/trail.hxx"
 #include "../helpers/status.hxx"
 #include "../classes/process-info.hxx"
 #include "../config.hpp"
@@ -15,22 +18,17 @@
 void mainThread(ProcessInfo *process)
 {
   std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-  std::uniform_int_distribution<int> distribution(0, (const int) std::size(trails) - 1);
+  std::uniform_int_distribution<int> distribution(0, (const int) sizeof(trails) / sizeof(Trail) - 1);
   auto randomTrailId = [&distribution, &generator]
   { return distribution(generator); };
   auto randomTrail = [&randomTrailId]()
   { return trails[randomTrailId()]; };
 
 
-  std::cout << "Hi!\n";
-  std::cout << "I am " << process->rank << " (out of " << process->networkSize << ")" << "\n";
-  std::cout << "My legion is " << process->legion->getId() << ", and its size is " << process->legion->getSize()
-            << "\n";
-
 // begin while
   {
     process->status = ProcessStatus::IN_LOCAL;
-//    wait
+    sleep(1);
 
     process->status = ProcessStatus::CONCURRING;
     // todo: proces.odpowiedzi[nadawca] <- undefined
@@ -43,10 +41,13 @@ void mainThread(ProcessInfo *process)
     process->responsesCount = 0;
     std::cout << "selected trail is: " << trail->getId() << " with " << trail->getMaxThroughput() << "\n";
 
-    // sleep on var
+
+    process->sleep();
+
 
     // wake up
     process->status = ProcessStatus::IN_CRITICAL;
+    sleep(1);
 
   }
 // end while
