@@ -52,11 +52,11 @@ void mainThread(ProcessInfo *process)
     );
 
     process->status = ProcessStatus::IN_LOCAL;
+//    pthread_create()
     sleep(randomTrailId());
-
+//    pthread_join()
 
     process->status = ProcessStatus::CONCURRING;
-    // todo: proces.odpowiedzi[nadawca] <- undefined
 
     auto question = message::question(
         process->requestPriority->time,

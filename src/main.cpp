@@ -6,12 +6,6 @@
 
 using namespace std;
 
-// todo: sending mutex
-
-/**
- * todo: should start both threads
- * @return
- */
 int
 main(int argc, char **argv)
 {
@@ -24,7 +18,6 @@ main(int argc, char **argv)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-
   auto processInfo = new ProcessInfo(rank, size, legions[rank]);
 
   pthread_create(&responderThreadHandle, NULL,
@@ -34,6 +27,9 @@ main(int argc, char **argv)
   mainThread(processInfo);
 
   pthread_join(responderThreadHandle, NULL);
+
+  std::cout << "[" << rank << "] exiting\n";
+
   MPI_Finalize();
   return 0;
 }

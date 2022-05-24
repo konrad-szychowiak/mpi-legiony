@@ -151,20 +151,22 @@ responderThread(ProcessInfo *process)
     message::MSGContent message = message::placeholderMessage;
     MPI_Status status;
 
-    int time = message.time;
     MPI_Recv(&message, message::size, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+    int time = message.time;
     auto receivedTime = LamportClock::startFrom(time);
     process->time->synchronise(receivedTime);
     delete receivedTime;
+    
+    // zapisz status przy odebraniu
 
     switch (status.MPI_TAG)
     {
       case MSG_QUESTION:
-        handleQuestion(reinterpret_cast<message::MSGContent *>(&message), process);
+        handleQuestion(&message, process);
         break;
 
       case MSG_ANSWER:
-        handleAnswer(reinterpret_cast<message::MSGContent *>(&message), process);
+        handleAnswer(&message, process);
         break;
     }
   }
