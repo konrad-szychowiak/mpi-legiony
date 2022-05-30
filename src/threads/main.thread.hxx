@@ -28,19 +28,6 @@ void mainThread(ProcessInfo *process)
 
   while (true)
   {
-    for (int i = 1; i < process->networkSize; i++)
-    {
-      int otherNodeIndex = (process->rank + i) % process->networkSize;
-      process->responses.erase(otherNodeIndex);
-      process->responses.insert(std::pair<int, int>(otherNodeIndex, -1));
-    }
-
-    auto trailIndex = randomTrailId();
-    auto trail = trails[trailIndex];
-    process->trail = trail;
-    process->requestPriority = Priority::from(process->time, process->rank);
-    process->responseCount = 0;
-
     // printf("\033[32m[r%d:t%d:s%d]\033[0m New life!\n",
     //        process->rank, process->time->getTime(), process->status
     // );
@@ -48,7 +35,21 @@ void mainThread(ProcessInfo *process)
     process->status = ProcessStatus::IN_LOCAL;
     sleep(randomTrailId() + 3);
 
-    process->status = ProcessStatus::CONCURRING;
+
+      for (int i = 1; i < process->networkSize; i++)
+      {
+          int otherNodeIndex = (process->rank + i) % process->networkSize;
+          process->responses.erase(otherNodeIndex);
+          process->responses.insert(std::pair<int, int>(otherNodeIndex, -1));
+      }
+
+      auto trailIndex = randomTrailId();
+      auto trail = trails[trailIndex];
+      process->trail = trail;
+      process->requestPriority = Priority::from(process->time, process->rank);
+      process->responseCount = 0;
+
+      process->status = ProcessStatus::CONCURRING;
 
     auto question = message::question(
         process->requestPriority->time,
