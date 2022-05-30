@@ -41,20 +41,12 @@ void mainThread(ProcessInfo *process)
     process->requestPriority = Priority::from(process->time, process->rank);
     process->responseCount = 0;
 
-    printf("\033[32m[r%d:t%d:s%d]\033[0m New life!\n",
-           process->rank, process->time->getTime(), process->status
-    );
-
-    printf("\033[32m[r%d:t%d:s%d]\033[0m Selected trail is %d with max throughput %d\n",
-           process->rank, process->time->getTime(), process->status,
-           trail->getId(),
-           trail->getMaxThroughput()
-    );
+    // printf("\033[32m[r%d:t%d:s%d]\033[0m New life!\n",
+    //        process->rank, process->time->getTime(), process->status
+    // );
 
     process->status = ProcessStatus::IN_LOCAL;
-//    pthread_create()
-    sleep(randomTrailId());
-//    pthread_join()
+    sleep(randomTrailId() + 3);
 
     process->status = ProcessStatus::CONCURRING;
 
@@ -66,12 +58,16 @@ void mainThread(ProcessInfo *process)
 
     lock(&process->responseCtl);
     process->time->increment();
+        printf("\033[32m[r%d:t%d:s%d]\033[0m Selected trail is %d with max throughput %d\n",
+           process->rank, process->time->getTime(), process->status,
+           trail->getId(),
+           trail->getMaxThroughput()
+    );
+
     for (int i = 1; i < process->networkSize; i++)
     {
       int otherNodeIndex = (process->rank + i) % process->networkSize;
-      printf("\033[36m[r%d:t%d:s%d >>> r%d]\033[0m Informing about exit and free resources\n",
-             process->rank, process->time->getTime(), process->status, otherNodeIndex
-      );
+
       MPI_Send(&question, message::size, MPI_INT, otherNodeIndex, MSG_QUESTION, MPI_COMM_WORLD);
     }
     unlock(&process->responseCtl);
@@ -80,9 +76,9 @@ void mainThread(ProcessInfo *process)
     process->sleep();
     // wake up
 
-    process->status = ProcessStatus::IN_CRITICAL;
-    sleep(randomTrailId());
 
+    process->status = ProcessStatus::IN_CRITICAL;
+    sleep(randomTrailId() + 10);
 
     auto resourceFreed = message::answer(
         process->requestPriority->time,
@@ -90,6 +86,10 @@ void mainThread(ProcessInfo *process)
         trailIndex,
         0
     );
+
+      printf("\033[32m[r%d:t%d:s%d]\033[0m Exit critical and inform about freeing resources\n",
+             process->rank, process->time->getTime(), process->status
+      );
 
     lock(&process->responseCtl);
     process->time->increment();

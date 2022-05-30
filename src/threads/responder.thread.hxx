@@ -27,17 +27,17 @@ handleQuestion(message::MSGContent *question, ProcessInfo *process)
   if (process->status == ProcessStatus::IN_LOCAL)
   {
     declaredUsage = 0;
-    printf("\033[37m[r%d:t%d:s%d:usage]\033[0m I'm in local; usage = %d\n",
-           process->rank, process->time->getTime(), process->status, declaredUsage
-    );
+    // printf("\033[37m[r%d:t%d:s%d:usage]\033[0m I'm in local; usage = %d\n",
+    //        process->rank, process->time->getTime(), process->status, declaredUsage
+    // );
   }
 
   if (process->status == ProcessStatus::IN_CRITICAL)
   {
     declaredUsage = isAboutMyTrail ? process->legion->getSize() : 0;
-    printf("\033[37m[r%d:t%d:s%d:usage]\033[0m I'm in Critical; usage = %d\n",
-           process->rank, process->time->getTime(), process->status, declaredUsage
-    );
+    // printf("\033[37m[r%d:t%d:s%d:usage]\033[0m I'm in Critical; usage = %d\n",
+    //        process->rank, process->time->getTime(), process->status, declaredUsage
+    // );
   }
 
   if (process->status == ProcessStatus::CONCURRING)
@@ -57,9 +57,9 @@ handleQuestion(message::MSGContent *question, ProcessInfo *process)
       else
       { declaredUsage = 0; }
     }
-    printf("\033[37m[r%d:t%d:s%d:usage]\033[0m I'm also concurring; usage = %d\n",
-           process->rank, process->time->getTime(), process->status, declaredUsage
-    );
+    // printf("\033[37m[r%d:t%d:s%d:usage]\033[0m I'm also concurring; usage = %d\n",
+    //        process->rank, process->time->getTime(), process->status, declaredUsage
+    // );
   }
 
   auto answer = message::answer(
@@ -138,11 +138,11 @@ handleAnswer(message::MSGContent *answer, ProcessInfo *process)
 void
 responderThread(ProcessInfo *process)
 {
-  printf("\033[32m[r%d:t%d:s%d]\033[0m Selected legion is %d with size %d\n",
-         process->rank, process->time->getTime(), process->status,
-         process->legion->getId(),
-         process->legion->getSize()
-  );
+  // printf("\033[32m[r%d:t%d:s%d]\033[0m Selected legion is %d with size %d\n",
+  //        process->rank, process->time->getTime(), process->status,
+  //        process->legion->getId(),
+  //        process->legion->getSize()
+  // );
 
   while (true)
 //  for (int i = 0; i < 3; i++)
@@ -156,8 +156,6 @@ responderThread(ProcessInfo *process)
     auto receivedTime = LamportClock::startFrom(time);
     process->time->synchronise(receivedTime);
     delete receivedTime;
-    
-    // zapisz status przy odebraniu
 
     switch (status.MPI_TAG)
     {

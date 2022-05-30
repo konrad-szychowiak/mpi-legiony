@@ -9,8 +9,8 @@
 #include "./classes/legion.hxx"
 
 Legion *legions[] = {
-    Legion::withSize(2),
-    Legion::withSize(3),
+    Legion::withSize(7),
+    Legion::withSize(6),
     Legion::withSize(5),
     Legion::withSize(8),
 };

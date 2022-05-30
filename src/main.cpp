@@ -28,8 +28,6 @@ main(int argc, char **argv)
 
   pthread_join(responderThreadHandle, NULL);
 
-  std::cout << "[" << rank << "] exiting\n";
-
   MPI_Finalize();
   return 0;
 }
